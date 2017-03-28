@@ -1,0 +1,14 @@
+version: '2'
+services:
+  # Notice how the service name, container name and repo directory (where the Dockerfile lives) all match.
+  gatekeeper:
+    container_name: gatekeeper
+    build: /vagrant/apps/gatekeeper
+    restart: on-failure
+    ports:
+      # The base Flask Dockerfile tells gunicorn to use 8080 by default, we expose it here and map it to a unique
+      # port for the app (which is subsequently used by the dev-env to forward it outside of vagrant too).
+      - "9050:8080"
+    volumes:
+      # Our convention is (for python) to always map the app files to /src within the container
+      - /vagrant/apps/gatekeeper:/src
