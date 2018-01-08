@@ -1,11 +1,23 @@
 # Set the base image to the base image
-FROM lr_base_python_flask
+FROM hmlandregistry/dev_base_python_flask:4
+
 ENV DEED_API_URL 'http://deed-api:8080'
+ENV AUDIT_API_URI 'http://audit-api:8080'
+ENV MAX_HEALTH_CASCADE 6
+ENV COMMIT 'Local'
+ENV APP_NAME 'gatekeeper'
 # WEBSEAL_HEADER_KEY and WEBSEAL_HEADER_VALUE for the dev-env are populated from the devenv-config after-up.sh. Not this.
+
+ENV LOG_LEVEL DEBUG
+ENV TEMPLATES_AUTO_RELOAD true
+
 
 # ----
 # Put your app-specific stuff here (extra yum installs etc).
 # Any unique environment variables your config.py needs should also be added as ENV entries here
+
+ENV LOG_LEVEL DEBUG
+
 
 # ----
 

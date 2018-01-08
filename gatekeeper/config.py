@@ -7,22 +7,26 @@ import os
 # 3. This is the only file in the app where os.getenv should be used.
 
 # For logging
-FLASK_LOG_LEVEL = os.getenv('FLASK_LOG_LEVEL')
+FLASK_LOG_LEVEL = os.environ['LOG_LEVEL']
 # For health route
-COMMIT = os.getenv('COMMIT')
+COMMIT = os.environ['COMMIT']
 
-DEED_API_URL = os.getenv('DEED_API_URL')
+DEED_API_URL = os.environ['DEED_API_URL']
+AUDIT_API_URI = os.environ['AUDIT_API_URI']
+COMMIT = os.environ['COMMIT']
+APP_NAME = os.environ['APP_NAME']
+MAX_HEALTH_CASCADE = os.environ['MAX_HEALTH_CASCADE']
+DEPENDENCIES = {'audit-api': AUDIT_API_URI, 'deed-api': DEED_API_URL}
 
 LOGCONFIG = {
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
         'simple': {
-            'format': '%(asctime)s level=[%(levelname)s] traceid=[%(trace_id)s] ' +
-                      'message=[%(message)s] exception=[%(exc_info)s]'
+            '()': 'gatekeeper.extensions.JsonFormatter'
         },
         'audit': {
-            'format': '%(asctime)s level=[AUDIT] traceid=[%(trace_id)s] message=[%(message)s]]'
+            '()': 'gatekeeper.extensions.JsonAuditFormatter'
         }
     },
     'filters': {

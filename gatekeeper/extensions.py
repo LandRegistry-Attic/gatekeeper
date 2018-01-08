@@ -1,6 +1,9 @@
 from flask_logconfig import LogConfig
 import logging
+import json
+import traceback
 from flask import g, ctx
+import collections
 
 # Create empty extension objects here
 logger = LogConfig()
@@ -29,3 +32,33 @@ class ContextualFilter(logging.Filter):
         else:
             log_record.trace_id = 'N/A'
         return True
+
+
+class JsonFormatter(logging.Formatter):
+    def format(self, record):
+        if record.exc_info:
+            exc = traceback.format_exception(*record.exc_info)
+        else:
+            exc = None
+
+        # Timestamp must be first (webops request)
+        log_entry = collections.OrderedDict(
+            [('timestamp', self.formatTime(record)),
+             ('level', record.levelname),
+             ('traceid', record.trace_id),
+             ('message', record.msg % record.args),
+             ('exception', exc)])
+
+        return json.dumps(log_entry)
+
+
+class JsonAuditFormatter(logging.Formatter):
+    def format(self, record):
+        # Timestamp must be first (webops request)
+        log_entry = collections.OrderedDict(
+            [('timestamp', self.formatTime(record)),
+             ('level', 'AUDIT'),
+             ('traceid', record.trace_id),
+             ('message', record.msg % record.args)])
+
+        return json.dumps(log_entry)

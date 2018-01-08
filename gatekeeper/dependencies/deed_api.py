@@ -1,6 +1,6 @@
 from flask import current_app, g
-import json
 from gatekeeper.app import app
+import json
 
 
 class DeedApi(object):
@@ -10,6 +10,7 @@ class DeedApi(object):
         self.deed_api_url = current_app.config["DEED_API_URL"]
 
     def health(self):
+        app.logger.info('Calling get health')
         resp = self._process_request('', 'health', 'GET')
 
         return resp
@@ -32,12 +33,6 @@ class DeedApi(object):
 
         return resp
 
-    def update_deed(self, deed_reference, payload, headers):
-        app.logger.info('Calling update deed')
-        resp = self._process_request('/' + str(deed_reference), 'deed', 'PUT', headers, payload)
-
-        return resp
-
     def make_effective(self, deed_reference, headers):
         app.logger.info('Calling make effective')
         resp = self._process_request('/' + str(deed_reference) + '/make-effective', 'deed', 'POST', headers)
@@ -53,12 +48,9 @@ class DeedApi(object):
     def _process_request(self, path, blueprint, method, headers=None, payload=None):
         url = '{0}/{1}{2}'
 
-        if (method == "POST"):
+        if method == "POST":
             app.logger.info('making POST request to deed API')
             resp = g.requests.post(url.format(self.deed_api_url, blueprint, path), headers=headers, data=json.dumps(payload))
-        elif (method == "PUT"):
-            app.logger.info('making PUT request to deed API')
-            resp = g.requests.put(url.format(self.deed_api_url, blueprint, path), headers=headers, data=json.dumps(payload))
         else:
             app.logger.info('making GET request to deed API')
 

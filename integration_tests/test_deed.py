@@ -3,6 +3,7 @@ import unittest
 import PyPDF2
 import io
 import os
+import time
 
 import requests
 from integration_tests.deed_data import valid_deed
@@ -83,9 +84,11 @@ class TestDeedRoutes(unittest.TestCase):
 
         self.assertEqual(sign_deed.status_code, 200)
 
-        make_effective = requests.post(app.config["DEED_API_URL"] + response_json["path"] + '/make-effective', headers=self.webseal_headers)
+        timer = time.time() + 60
+        while time.time() < timer and sign_deed.status_code != 200:
+            make_effective = requests.post(app.config["DEED_API_URL"] + response_json["path"] + '/make-effective', headers=self.webseal_headers)
 
-        self.assertEqual(make_effective.status_code, 200)
+            self.assertEqual(make_effective.status_code, 200)
 
     def test_get_signed_deeds(self):
         create_deed = requests.post(app.config["DEED_API_URL"] + '/deed/',
@@ -140,7 +143,7 @@ class TestDeedRoutes(unittest.TestCase):
         txt = obj.getPage(0).extractText()
         self.assertTrue('Digital Mortgage Deed' in txt)
         txt = obj.getPage(1).extractText()
-        self.assertTrue('e-MD1291A' in txt)
+        self.assertTrue('e-MD12344' in txt)
         # Can look at this file if you want.
         f = open('integration_test_deed.pdf', 'wb')
         f.write(get_created_deed.content)
