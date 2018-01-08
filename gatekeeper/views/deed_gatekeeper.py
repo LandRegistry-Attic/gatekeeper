@@ -1,11 +1,11 @@
 from flask import request, Blueprint, Response
+from gatekeeper.app import app
 from gatekeeper.dependencies.deed_api import DeedApi
 import json
 import os
 import sys
 from jsonschema.validators import validator_for
 from underscore import _
-from gatekeeper.app import app
 import collections
 
 # This is the blueprint object that gets registered into the app in blueprints.py.
@@ -15,7 +15,9 @@ deed_gatekeeper = Blueprint('deed_gatekeeper', __name__)
 @deed_gatekeeper.route("/health", methods=['GET'])
 def check_status():
     deed = DeedApi()
+    app.logger.info('Calling get health dependency')
     resp = deed.health()
+    log_call_result('get health', resp, 200)
 
     return build_response(resp)
 
@@ -23,7 +25,9 @@ def check_status():
 @deed_gatekeeper.route("/<deed_reference>", methods=['GET'])
 def get_deed(deed_reference):
     deed = DeedApi()
+    app.logger.info('Calling get deed dependency')
     resp = deed.get_deed(deed_reference, request.headers)
+    log_call_result('get deed', resp, 200)
 
     return build_response(resp)
 
@@ -31,7 +35,9 @@ def get_deed(deed_reference):
 @deed_gatekeeper.route("/dashboard/<status>", methods=['GET'])
 def get_metrics(status):
     deed = DeedApi()
+    app.logger.info('Calling get metrics dependency')
     resp = deed.get_metrics(status, request.headers)
+    log_call_result('get metrics', resp, 200)
 
     return build_response(resp)
 
@@ -45,29 +51,12 @@ def create_deed():
     schema_check = validate_schema(payload)
 
     if schema_check:
-        app.logger.info('Schema check failed')
+        app.logger.error('Schema check failed')
         return Response(response=json.dumps({"errors": schema_check}), mimetype='application/json', status=400)
 
-    app.logger.info('Making call to get deed dependency')
-    app.logger.info(request.headers)
+    app.logger.info('Making call to create deed dependency')
     resp = deed.create_deed(payload, request.headers)
-
-    return build_response(resp)
-
-
-@deed_gatekeeper.route("/<deed_reference>", methods=['PUT'])
-def update_deed(deed_reference):
-    deed = DeedApi()
-    payload = request.get_json()
-
-    schema_check = validate_schema(payload)
-
-    if schema_check:
-        app.logger.info('Schema check failed')
-        return Response(response=json.dumps({"errors": schema_check}), mimetype='application/json', status=400)
-
-    app.logger.info('Making call to update deed dependency')
-    resp = deed.update_deed(deed_reference, payload, request.headers)
+    log_call_result('create deed', resp, 201)
 
     return build_response(resp)
 
@@ -78,6 +67,7 @@ def make_effective(deed_reference):
 
     app.logger.info('Making call to update deed dependency')
     resp = deed.make_effective(deed_reference, request.headers)
+    log_call_result('make effective', resp, 200)
 
     return build_response(resp)
 
@@ -88,6 +78,7 @@ def retrieve_signed():
 
     app.logger.info('Making call to update deed dependency')
     resp = deed.retrieve_signed(request.headers)
+    log_call_result('retrieve signed', resp, 200)
 
     return build_response(resp)
 
@@ -206,3 +197,8 @@ def validate_schema(payload):
         error_message.append("Problem %s: %s" % (count, str(error)))
 
     return error_message
+
+
+def log_call_result(dependency, response, status_code):
+    app.logger.info('Call to %s has been successful.', dependency) if response.status_code == status_code \
+        else app.logger.error('Call to %s has failed.', dependency)

@@ -1,0 +1,7 @@
+Flask-LogConfig==0.4.2
+requests==2.10.0
+Flask-API==0.6.4
+jsonschema==2.5.1
+underscore.py==0.1.6
+logutils==0.3.3
+eventlet==0.19.0

@@ -802,7 +802,7 @@
         "md_ref": "e-MD1291A",
         "property_address": "5 The Drive, This Town, This County, PL4 4ZZ",
         "date_of_mortgage_offer": 123,
-        "miscellaneous_information": false,
+        "deed_effector": false,
         "title_number": "DN12345",
         "identity_checked": "Y",
         "borrowers": [
@@ -816,37 +816,37 @@
           }
         ]
       },
-      "description": "Checking offer date and misc info fails if they are not strings",
+      "description": "Checking offer date and effector info fails if they are not strings",
       "expected": 2
     },
     {
-      "payload": {
-        "md_ref": "e-MD1291A",
-        "property_address": "5 The Drive, This Town, This County, PL4 4ZZ",
-        "date_of_mortgage_offer": "Making sure that if this sentence is over 50 characters long, that it fails",
-        "miscellaneous_information": "Making sure that if this sentence is over 250 characters long, that it fails. Making sure that if this sentence is over 250 characters long, that it fails. Making sure that if this sentence is over 250 characters long, that it fails. Making sure that if this sentence is over 250 characters long, that it fails. ",
-        "title_number": "DN12345",
-        "identity_checked": "Y",
-        "borrowers": [
-          {
-            "forename": "Amanda",
-            "surname": "Smythe",
-            "gender": "Female",
-            "address": "1 The High Street Highley CR0 9YH",
-            "dob": "01/01/1901",
-            "phone_number": "07777777777"
-          }
-        ]
-      },
-      "description": "Checking offer date and misc info fail if they are too long",
-      "expected": 2
+            "payload": {
+              "md_ref": "e-MD1291A",
+              "property_address": "5 The Drive, This Town, This County, PL4 4ZZ",
+              "date_of_mortgage_offer": "Making sure that if this sentence is over 50 characters long, that it fails",
+              "deed_effector": "A Conveyancer ",
+              "title_number": "DN12345",
+              "identity_checked": "Y",
+              "borrowers": [
+                {
+                  "forename": "Amanda",
+                  "surname": "Smythe",
+                  "gender": "Female",
+                  "address": "1 The High Street Highley CR0 9YH",
+                  "dob": "01/01/1901",
+                  "phone_number": "07777777777"
+                  }
+                ]
+              },
+              "description": "Checking offer date and effector info fail if they are too long",
+              "expected": 1
     },
     {
       "payload": {
         "md_ref": "e-MD1291A",
         "property_address": "5 The Drive, This Town, This County, PL4 4ZZ",
         "date_of_mortgage_offer": "a date string",
-        "miscellaneous_information": "A Conveyancer",
+        "deed_effector": "A Conveyancer",
         "title_number": "DN12345",
         "identity_checked": "Y",
         "borrowers": [
@@ -860,7 +860,7 @@
           }
         ]
       },
-      "description": "Check normal offer date and misc info pass",
+      "description": "Check normal offer date and effector info pass",
       "expected": 0
     },
     {
@@ -868,7 +868,7 @@
         "md_ref": "e-MD1291A",
         "property_address": "   ",
         "date_of_mortgage_offer": "   ",
-        "miscellaneous_information": "A Conveyancer",
+        "deed_effector": "A Conveyancer",
         "title_number": "DN12345",
         "identity_checked": "Y",
         "borrowers": [
@@ -882,7 +882,7 @@
           }
         ]
       },
-      "description": "Checking offer date and misc info fail if they are both blank",
+      "description": "Checking offer date and effector info fail if they are both blank",
       "expected": 2
     }
   ]
