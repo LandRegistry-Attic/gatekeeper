@@ -8,7 +8,6 @@ ENV COMMIT 'Local'
 ENV APP_NAME 'gatekeeper'
 # WEBSEAL_HEADER_KEY and WEBSEAL_HEADER_VALUE for the dev-env are populated from the devenv-config after-up.sh. Not this.
 
-ENV LOG_LEVEL DEBUG
 ENV TEMPLATES_AUTO_RELOAD true
 
 
